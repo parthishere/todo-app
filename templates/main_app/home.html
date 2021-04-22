@@ -1,10 +1,25 @@
 {% extends 'main_app/base.html' %}
 {% block body_block %}
-
+<br></br>
+<a href='{% url "main_app:create" %}'><button type="button" class="btn btn-success btn-lg btn-block">Add Note</button></a></br></hr>
+<hr>
 {% if objects_list %}
-{% for obj in objects_list %}
-{{ obj }}
+{% for obj in objects_list %}<center>
+&emsp; &emsp;{{ obj }} &emsp; <a class="btn btn-primary" href="#" role="button">archive</a> | <a href='{% url "main_app:edit" pk=obj.pk %}'><button type="button" class="btn btn-outline-warning">Edit</button></a>
+ <a href='{% url "main_app:delete" pk=obj.pk %}'><button type="button" class="btn btn-outline-danger">Delete</button><a>
+ &emsp;
+ <form method='POST' style="float: right">
+ <input type='hidden' value="{{ obj.pk }}">
+    <input type='submit' value='done' name='done'>
+  </form>
+  &emsp;
+<br>
+</hr>
+<br>
+
+
 {% endfor %}
 {% endif %}
-
+</center>
 {% endblock %}
+
