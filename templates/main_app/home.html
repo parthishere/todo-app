@@ -1,0 +1,10 @@
+{% extends 'main_app/base.html' %}
+{% block body_block %}
+
+{% if objects_list %}
+{% for obj in objects_list %}
+{{ obj }}
+{% endfor %}
+{% endif %}
+
+{% endblock %}
