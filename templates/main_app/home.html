@@ -14,8 +14,19 @@
 
 {% if objects_list %}
 {% for obj in objects_list %}<center>
-&emsp; &emsp;   {{ obj }} &emsp; 
-<a class="btn btn-primary" href="#" role="button">archive</a> | 
+&emsp; &emsp;   {{ obj }} &emsp; <span class="badge badge-pill badge-success">Success</span
+
+<form method='POST' style="float: right" action='{% url "main_app:archive" %}'>
+ {% csrf_token %}
+ <input type='hidden' value="{{ obj.pk }}" name='pk'>
+ {% if not obj.archive %}
+   <input type='submit' value='archive' name='Archive'>
+  {% else %}
+  <input type='submit' value='Un-archive' name='Unarchive'>
+{% endif %}
+  </form> 
+
+ | 
 <a href='{% url "main_app:edit" pk=obj.pk %}'>
 <button type="button" class="btn btn-outline-warning">Edit</button></a>
  <a href='{% url "main_app:delete" pk=obj.pk %}'><button type="button" class="btn btn-outline-danger">Delete</button><a>
@@ -24,7 +35,12 @@
  <form method='POST' style="float: right" action='{% url "main_app:done" %}'>
  {% csrf_token %}
  <input type='hidden' value="{{ obj.pk }}" name='pk'>
-    <input type='submit' value='done' name='done'>
+ {% if not obj.done %}
+   <input type='submit' value='Done' name='Done'>
+  {% else %}
+  <input type='submit' value='undone' name='undone'>
+{% endif %}
+    
   </form>
 &emsp;
 <br>
@@ -32,7 +48,10 @@
 <br>
 
 
+
+
 {% endfor %}
+
 {% endif %}
 </center>
 {% endblock %}

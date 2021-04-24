@@ -8,6 +8,7 @@ import tags.models
 class ToDoModel(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	text = models.CharField(max_length=120)
+	description = models.TextField(blank=True, null=True)
 	start_date = models.DateTimeField(default=timezone.now)
 	end_date = models.DateTimeField(default=timezone.now)
 	done = models.BooleanField(default=False)
