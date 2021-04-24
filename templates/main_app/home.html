@@ -14,7 +14,7 @@
 
 {% if objects_list %}
 {% for obj in objects_list %}<center>
-&emsp; &emsp;   {{ obj }} &emsp; 
+&emsp; &emsp;   <a class='no-blue' href="{{ obj.get_absolute_url }}">{{ obj }}</a> &emsp; 
 {% for tag in obj.tags.all %}
 
 <span class="badge badge-pill badge-success">{{ tag.tag }}</span> 

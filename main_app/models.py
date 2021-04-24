@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import redirect, reverse
 from django.utils import timezone
 
 from django.contrib.auth.models import User
@@ -21,4 +22,10 @@ class ToDoModel(models.Model):
  
 	def __str__(self):
 		return self.text
+
+	def get_absolute_url(self):
+		return reverse("main_app:detail", kwargs={"pk": self.pk})
+
+
+	
 

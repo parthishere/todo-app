@@ -17,7 +17,7 @@ def add_tag(request):
             context['form'] = tag_form
             return redirect('main_app:home')
     
-    return render(request, "main_app/add_todo.html", context=context)
+    return render(request, "tags/add_tag.html", context=context)
 
 
 
@@ -35,11 +35,25 @@ def edit_tag(request, pk=None):
             context['form'] = tag_form
             return redirect('main_app:home')
     
-    return render(request, "main_app/add_todo.html", context=context)
+    return render(request, "tags/add_tag.html", context=context)
 
 @login_required(login_url='account_login')
 def delete_tag(request, pk=None):
-	obj = Tag.objects.filter(pk=pk)
+	obj = Tag.objects.filter(pk=pk).filter(user=request.user)
 	obj.delete()
 	
-	return render(request, 'main_app/home.html', {})
+	return redirect('main_app:home')
+
+@login_required
+def tag_list(request):
+    if request.user.is_authenticated:
+        objects_list = Tag.objects.filter(user=request.user)
+        context = {}
+        if objects_list.exists():
+            context = {
+                'objects_list':objects_list
+            }
+    else:
+        context = {}
+        
+    return render(request, 'tags/list.html', context)

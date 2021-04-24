@@ -1,0 +1,79 @@
+{% extends 'main_app/base.html' %}
+
+{% block body_block %}
+<br></br>
+
+{% if object %}
+
+{% for object in object %}
+<center>
+
+<h1> {{ object.text }} </h1>
+</br>
+<hr>
+
+<center>
+{% for tag in object.tags.all %}
+<span class="badge badge-pill badge-success">{{ tag.tag }}</span> 
+{% endfor %} 
+</center>
+
+<br>
+<br>
+<p>
+
+{{ object.description }}
+</p>
+
+
+<hr>
+<br>
+<a href="{% url 'main_app:edit' pk=object.pk %}">
+<button type="button" class="btn btn-outline-warning">Edit</button></a>
+ <a href='{% url "main_app:delete" pk=object.pk %}'><button type="button" class="btn btn-outline-danger">Delete</button><a>
+ &emsp;
+
+
+<form method='POST' style="float: right" action='{% url "main_app:archive" %}'>
+ {% csrf_token %}
+ <input type='hidden' value="{{ object.pk }}" name='pk'>
+ {% if not object.archive %}
+   <input type='submit' value='Archive' name='Archive'>
+  {% else %}
+  <input type='submit' value='Un-archive' name='Unarchive'>
+{% endif %}
+</form> 
+
+<form method='POST' style="float: right" action='{% url "main_app:star" %}'>
+ {% csrf_token %}
+ <input type='hidden' value="{{ object.pk }}" name='pk'>
+ {% if not object.starred %}
+   <input type='submit' value='Star' name='Star'>
+  {% else %}
+  <input type='submit' value='Un-Star' name='Un-Star'>
+{% endif %}
+</form> 
+
+
+<form method='POST' style="float: right" action='{% url "main_app:done" %}'>
+ {% csrf_token %}
+ <input type='hidden' value="{{ object.pk }}" name='pk'>
+ {% if not object.done %}
+   <input type='submit' value='Done' name='Done'>
+  {% else %}
+  <input type='submit' value='undone' name='undone'>
+{% endif %}
+</form>
+
+
+&emsp;
+<br>
+</hr>
+<br>
+
+{% endfor %}
+{% endif %}
+
+</center>
+{% endblock %}
+

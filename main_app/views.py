@@ -4,6 +4,7 @@ from django.db.models import Q
 
 from .forms import TodoModelForm
 from .models import ToDoModel
+from tags.models import Tag
 
 # Create your views here.
 def list_function(request):
@@ -33,6 +34,21 @@ def add_todo(request):
             return redirect('main_app:home')
     
     return render(request, "main_app/add_todo.html", context=context)
+
+
+@login_required(login_url='account_login')  
+def detail_todo(request, pk=None):
+    context = {}
+    if request.user.is_authenticated:
+        obj = get_object_or_404(ToDoModel, pk=pk)
+        if obj.user == request.user:
+            if obj is not None:
+                context = {
+                    'object':obj
+                } 
+        
+    return render(request, 'main_app/detail_todo.html', context=context)
+    
     
 @login_required(login_url='account_login')        
 def edit_todo(request, pk=None):
@@ -44,8 +60,10 @@ def edit_todo(request, pk=None):
         if todo_form.is_valid():
             instance = todo_form.save(commit=False)
             instance.user = request.user
+            tag = Tag.objects.filter(tag__in=request.POST.get('tags'))
+            instance.tags.set(tag)
+            todo_form.save_m2m()
             instance.save()
-            context['form'] = todo_form
             return redirect('main_app:home')
     
     return render(request, "main_app/add_todo.html", context=context)   
@@ -54,13 +72,13 @@ def edit_todo(request, pk=None):
 def detail_todo(request, pk=None):
 	obj = ToDoModel.objects.filter(pk=pk)
 	context = {
-		'obj':obj
+		'object':obj
 	}
-	return render(request, 'main_app/home.html', context)
+	return render(request, 'main_app/detail_todo.html', context)
 
 @login_required(login_url='account_login')
 def delete_list(request, pk=None):
-	obj = ToDoModel.objects.filter(pk=pk)
+	obj = ToDoModel.objects.filter(pk=pk).filter(user=request.user)
 	obj.delete()
 	
 	return render(request, 'main_app/home.html', {})
