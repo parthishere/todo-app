@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     
-    'allauth.socialaccount.providers.gitlab',
-    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.gitlab',
+    # 'allauth.socialaccount.providers.google',
     
     'main_app',
     'tags', 
