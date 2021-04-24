@@ -70,7 +70,7 @@ def edit_todo(request, pk=None):
 
 @login_required(login_url='account_login')
 def detail_todo(request, pk=None):
-	obj = ToDoModel.objects.filter(pk=pk)
+	obj = ToDoModel.objects.filter(pk=pk).filter(user=request.user)
 	context = {
 		'object':obj
 	}
@@ -90,19 +90,19 @@ def done_todo(request):
         pk = request.POST.get('pk')
         if pk is not None:
             print('i')
-            obj = get_object_or_404(ToDoModel, pk=pk)
+            obj = get_object_or_404(ToDoModel, pk=pk).filter(user=request.user)
             if obj.done == True:
                 obj.done=False
             else:
                 obj.done=True
             obj.save()
-            request.session['completed_count'] = ToDoModel.objects.filter(done=True).count()
+            request.session['completed_count'] = ToDoModel.objects.filter(done=True).filter(user=request.user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
 @login_required(login_url='account_login')
 def archives_list(request):
-    objects_list = ToDoModel.objects.filter(archive=True)
+    objects_list = ToDoModel.objects.filter(archive=True).filter(user=request.user)
     context = {
 		'objects_list':objects_list
 	}
@@ -113,13 +113,13 @@ def archive_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk)
+            obj = get_object_or_404(ToDoModel, pk=pk).filter(user=request.user)
             if obj.archive == True:
                 obj.archive=False
             else:
                 obj.archive=True
             obj.save()
-            request.session['archive_count'] = ToDoModel.objects.filter(archive=True).count()
+            request.session['archive_count'] = ToDoModel.objects.filter(archive=True).filter(user=request.user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
@@ -149,7 +149,7 @@ def search_todo(request):
 
 @login_required(login_url='account_login')
 def done_todo_list(request):
-    objects_list = ToDoModel.objects.filter(done=True)
+    objects_list = ToDoModel.objects.filter(done=True).filter(user=request.user)
     context = {
 		'objects_list':objects_list
 	}
@@ -161,20 +161,20 @@ def starred_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
             if obj.starred == True:
                 obj.starred=False
             else:
                 obj.starred=True
             obj.save()
-            request.session['starred_count'] = ToDoModel.objects.filter(starred=True).count()
+            request.session['starred_count'] = ToDoModel.objects.filter(starred=True).filter(user=request.user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
 
 @login_required(login_url='account_login')
 def starred_todo_list(request):
-    objects_list = ToDoModel.objects.filter(starred=True)
+    objects_list = ToDoModel.objects.filter(starred=True).filter(user=request.user)
     context = {
 		'objects_list':objects_list
 	}
