@@ -93,11 +93,9 @@ def delete_list(request, pk=None):
 @login_required(login_url='account_login')
 def done_todo(request):
     if request.POST:
-        print('h')
         pk = request.POST.get('pk')
         if pk is not None:
-            print('i')
-            obj = get_object_or_404(ToDoModel, pk=pk).filter(user=request.user)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
             if obj.done == True:
                 obj.done=False
             else:
