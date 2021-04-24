@@ -14,13 +14,18 @@
 
 {% if objects_list %}
 {% for obj in objects_list %}<center>
-&emsp; &emsp;   {{ obj }} &emsp; <span class="badge badge-pill badge-success">Success</span
+&emsp; &emsp;   {{ obj }} &emsp; 
+{% for tag in obj.tags.all %}
+
+<span class="badge badge-pill badge-success">{{ tag.tag }}</span> 
+{% endfor %} 
+
 
 <form method='POST' style="float: right" action='{% url "main_app:archive" %}'>
  {% csrf_token %}
  <input type='hidden' value="{{ obj.pk }}" name='pk'>
  {% if not obj.archive %}
-   <input type='submit' value='archive' name='Archive'>
+   <input type='submit' value='Archive' name='Archive'>
   {% else %}
   <input type='submit' value='Un-archive' name='Unarchive'>
 {% endif %}

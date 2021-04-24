@@ -136,3 +136,28 @@ def done_todo_list(request):
 		'objects_list':objects_list
 	}
     return render(request, 'main_app/home.html', context)
+
+
+@login_required(login_url='account_login')
+def starred_todo(request):
+    if request.POST:
+        pk = request.POST.get('pk')
+        if pk is not None:
+            obj = get_object_or_404(ToDoModel, pk=pk)
+            if obj.starred == True:
+                obj.starred=False
+            else:
+                obj.starred=True
+            obj.save()
+            request.session['starred_count'] = ToDoModel.objects.filter(starred=True).count()
+            return redirect('main_app:home')
+    return render(request, "main_app/home.html", context={})
+
+
+@login_required(login_url='account_login')
+def starred_todo_list(request):
+    objects_list = ToDoModel.objects.filter(starred=True)
+    context = {
+		'objects_list':objects_list
+	}
+    return render(request, 'main_app/home.html', context)

@@ -14,6 +14,7 @@ class ToDoModel(models.Model):
 	done = models.BooleanField(default=False)
 	archive = models.BooleanField(default=False)
 	tags = models.ManyToManyField('tags.Tag', blank=True, null=True)
+	starred = models.BooleanField(default=False)
 
 	class Meta():
 		ordering = [ '-id' ]
