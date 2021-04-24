@@ -5,6 +5,7 @@ from django.db.models import Q
 from .forms import TodoModelForm
 from .models import ToDoModel
 from tags.models import Tag
+from tags.forms import TagForm
 
 # Create your views here.
 def list_function(request):
@@ -23,6 +24,7 @@ def list_function(request):
 @login_required(login_url='account_login')
 def add_todo(request):
     todo_form = TodoModelForm(request.POST or None)
+    tag_form = TagForm(request.POST or None)
     context = {}
     context['form'] = todo_form
     if request.POST:
@@ -32,7 +34,9 @@ def add_todo(request):
             instance.save()
             context['form'] = todo_form
             return redirect('main_app:home')
-    
+        if tag_form.is_valid():
+            instance = tag_form.save()
+            return redirect('main_app:create')
     return render(request, "main_app/add_todo.html", context=context)
 
 
@@ -54,8 +58,10 @@ def detail_todo(request, pk=None):
 def edit_todo(request, pk=None):
     instance = get_object_or_404(ToDoModel, pk=pk)
     todo_form = TodoModelForm(request.POST or None, instance=instance)
+    tag_form = TagForm(request.POST or None)
     context = {}
     context['form'] = todo_form
+    context['tag_form'] = tag_form
     if request.POST:
         if todo_form.is_valid():
             instance = todo_form.save(commit=False)
@@ -65,6 +71,9 @@ def edit_todo(request, pk=None):
             todo_form.save_m2m()
             instance.save()
             return redirect('main_app:home')
+        if tag_form.is_valid():
+            instance = tag_form.save()
+            return redirect('main_app:edit', kwargs={ 'pk':pk })
     
     return render(request, "main_app/add_todo.html", context=context)   
 
