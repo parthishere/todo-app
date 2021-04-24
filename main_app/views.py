@@ -118,7 +118,7 @@ def archive_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk).filter(user=request.user)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
             if obj.archive == True:
                 obj.archive=False
             else:
