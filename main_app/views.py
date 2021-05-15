@@ -7,14 +7,22 @@ from .models import ToDoModel
 from tags.models import Tag
 from tags.forms import TagForm
 
+
+
 # Create your views here.
 def list_function(request):
     if request.user.is_authenticated:
+        cat = None
+        try:
+            cat = Tag.objects.filter(user=request.user)
+        except:
+            print('e')
         objects_list = ToDoModel.objects.filter(done=False).filter(archive=False).filter(user=request.user)
         context = {}
         if objects_list.exists():
             context = {
-                'objects_list':objects_list
+                'objects_list':objects_list,
+                'categories': cat,
             }
     else:
         context = {}
@@ -132,21 +140,41 @@ def archive_todo(request):
 def search_todo(request):
     context = {}
     qs = None
+    
+    try:
+        cat = Tag.objects.filter(user=request.user)
+        context['categories'] = cat
+    except:
+        pass
+    
     if request.user.is_authenticated:
         query = request.GET.get('q')
-        if query is not None:
+        cat = request.GET.get('category')
+        
+        if query is not None and cat is None:
             qs = ToDoModel.objects.filter(
                 Q(text__icontains=query) |
                 Q(start_date__icontains=query) |
                 Q(end_date__icontains=query) |
                 Q(tags__tag__icontains=query)
             ).filter(user=request.user)
+        
+        elif query is None and cat is not None:
+            qs = ToDoModel.objects.filter(
+               Q(tags__tag__icontains=cat)
+            ).filter(user=request.user)
             
+        elif query is not None and cat is not None:
+            qs = ToDoModel.objects.filter(
+                Q(text__icontains=query) |
+                Q(start_date__icontains=query) |
+                Q(end_date__icontains=query) |
+                Q(tags__tag__icontains=query)
+            ).filter(user=request.user).filter(Q(tags__tag__icontains=query))
         
         if qs is not None:
-            context = {
-                'objects_list':qs
-            }
+            context['objects_list'] = qs
+            
     else:
         context = {}
         

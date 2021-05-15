@@ -5,11 +5,29 @@
 
 {% url 'main_app:home' as home_url %}
 
+<div class='container-sm'>
+  <form method='get' action="{% url 'main_app:search' %}">
+
+        <div class="input-group md-3">
+          <select id="category" class="form-control" name="category">
+            <option selected>Select Categories...</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+          </select>
+            <div class="input-group-prepend"> 
+            <input style="float: " type='submit' name='submit' class='btn btn-primary form-control-sm center'>
+            </div>
+        </div>
+  </form>
+  </div>
+
 {% if request.path == home_url %}
 <a href='{% url "main_app:create" %}'><button type="button" class="btn btn-success btn-lg btn-block">Add Note</button></a></br></hr>
 <br>
 {% else %}
 {% endif %}
+
 
 
 {% if objects_list %}
