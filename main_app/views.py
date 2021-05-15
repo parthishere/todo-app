@@ -75,8 +75,11 @@ def edit_todo(request, pk=None):
         if todo_form.is_valid():
             instance = todo_form.save(commit=False)
             instance.user = request.user
-            tag = Tag.objects.filter(tag__in=request.POST.get('tags'))
-            instance.tags.set(tag)
+            try:
+                tag = Tag.objects.filter(tag__in=request.POST.get('tags'))
+                instance.tags.set(tag)
+            except:
+                pass
             todo_form.save_m2m()
             instance.save()
             return redirect('main_app:home')

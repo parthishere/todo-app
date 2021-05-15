@@ -6,6 +6,7 @@ from .forms import TagForm
 
 @login_required(login_url='account_login')
 def add_tag(request):
+    rnext = request.GET.get('next')
     tag_form = TagForm(request.POST or None)
     context = {}
     context['form'] = tag_form
@@ -15,6 +16,8 @@ def add_tag(request):
             instance.user = request.user
             instance.save()
             context['form'] = tag_form
+            if rnext is not None:
+                return redirect(request.GET.get('next'))
             return redirect('main_app:home')
     
     return render(request, "tags/add_tag.html", context=context)
