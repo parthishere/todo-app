@@ -22,6 +22,12 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'main_app:starred-list' %}">Starred<span class="badge badge-light">{{ request.session.starred_count }}</span></a>
       </li>
+      {% if request.user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'main_app:starred-list' %}">Admin<span class="badge badge-light">{{ request.session.starred_count }}</span></a>
+      </li>
+      {% else %}{% endif %}
+
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Account
@@ -33,6 +39,7 @@
           {% else %}
           <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
           {% endif %}
+          
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{% url 'tag:list' %}">See Tags</a>
           <a class="dropdown-item" href="{% url 'tag:create' %}">Add Tag</a>

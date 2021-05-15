@@ -7,56 +7,58 @@
 
 {% if request.path == home_url %}
 <a href='{% url "main_app:create" %}'><button type="button" class="btn btn-success btn-lg btn-block">Add Note</button></a></br></hr>
-<hr>
+<br>
 {% else %}
 {% endif %}
 
 
 {% if objects_list %}
+<div class='container-fluid'>
+<ul class="list-group">
+
 {% for obj in objects_list %}<center>
-&emsp; &emsp;   <a class='no-blue' href="{{ obj.get_absolute_url }}">{{ obj }}</a> &emsp; 
-{% for tag in obj.tags.all %}
-
-<span class="badge badge-pill badge-success">{{ tag.tag }}</span> 
-{% endfor %} 
+&emsp; &emsp; <li class="list-group-item">
+              <a class='no-blue' href="{{ obj.get_absolute_url }}">{{ obj }}</a> &emsp; 
 
 
-<form method='POST' style="float: right" action='{% url "main_app:archive" %}'>
- {% csrf_token %}
- <input type='hidden' value="{{ obj.pk }}" name='pk'>
- {% if not obj.archive %}
-   <input type='submit' value='Archive' name='Archive'>
-  {% else %}
-  <input type='submit' value='Un-archive' name='Unarchive'>
-{% endif %}
-  </form> 
-
- | 
-<a href='{% url "main_app:edit" pk=obj.pk %}'>
-<button type="button" class="btn btn-outline-warning">Edit</button></a>
- <a href='{% url "main_app:delete" pk=obj.pk %}'><button type="button" class="btn btn-outline-danger">Delete</button><a>
- &emsp;
-
- <form method='POST' style="float: right" action='{% url "main_app:done" %}'>
- {% csrf_token %}
- <input type='hidden' value="{{ obj.pk }}" name='pk'>
- {% if not obj.done %}
-   <input type='submit' value='Done' name='Done'>
-  {% else %}
-  <input type='submit' value='undone' name='undone'>
-{% endif %}
-    
-  </form>
-&emsp;
-<br>
-</hr>
-<br>
+  {% for tag in obj.tags.all %}
+  <span class="badge badge-pill badge-success">{{ tag.tag }}</span> 
+  {% endfor %} 
 
 
+    <form method='POST' style="float: right" action='{% url "main_app:archive" %}'>
+      {% csrf_token %}
+      <input type='hidden' value="{{ obj.pk }}" name='pk'>
+      {% if not obj.archive %}
+        <input type='submit' value='Archive' name='Archive' class='btn btn-outline-dark'>
+        {% else %}
+        <input type='submit' value='Un-archive' name='Unarchive' class='btn btn-outline-dark'>
+      {% endif %}
+    </form> 
+
+    | &emsp;
+    <a href='{% url "main_app:edit" pk=obj.pk %}'>
+    <button type="button" class="btn btn-outline-warning">Edit</button></a>
+    <a href='{% url "main_app:delete" pk=obj.pk %}'><button type="button" class="btn btn-outline-danger">Delete</button><a>
+    &emsp;
+
+    <form method='POST' style="float: right" action='{% url "main_app:done" %}'>
+      {% csrf_token %}
+      <input type='hidden' value="{{ obj.pk }}" name='pk'>
+        {% if not obj.done %}
+          <input type='submit' value='Done' name='Done' class='btn btn-outline-dark'>
+        {% else %}
+          <input type='submit' value='undone' name='undone' class='btn btn-outline-dark'>
+        {% endif %}
+    </form>
+
+    &emsp;
 
 
+</li>
 {% endfor %}
-
+</ul>
+</div>
 {% endif %}
 </center>
 {% endblock %}
