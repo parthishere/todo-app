@@ -6,8 +6,8 @@ from tags.models import Tag
 from .models import *
 
 class TodoModelForm(forms.ModelForm):
-	end_date =forms.DateField(widget = forms.SelectDateWidget())
-	end_time = forms.TimeField(widget=TimePickerInput)
+	end_date =forms.DateField(widget = forms.SelectDateWidget(), required=False)
+	end_time = forms.TimeField(widget=TimePickerInput, required=False)
 	class Meta:
 		model = ToDoModel
 		fields = ['text', 'description', 'end_date', 'end_time', 'tags']
