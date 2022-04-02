@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import dotenv
+from pathlib import Path
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -19,11 +21,15 @@ TAMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%v1ohze)m+8#@5!fr@a8uf#5h38%a=)c2kw6=9^r-_(&j-2k=m'
+SECRET_KEY = os.environ['DATABASE_PASSWORD']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,15 +95,16 @@ WSGI_APPLICATION = 'todo.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+# postgres://aljlunifqhdlip:2a41a31b93826fc714d49d7ef88edfbd52a43b5d389acbba5538627e2ff3503b@ec2-3-217-251-77.compute-1.amazonaws.com:5432/dbmo3ld4lc21va
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd581dlfkmbur6m',
-        'HOST': 'ec2-18-214-140-149.compute-1.amazonaws.com',
+        'NAME': os.environ['DATABASE_NAME'],
+        'HOST': os.environ['DATABASE_HOST'],
         'PORT': 5432,
-        'USER': 'yzcbgcteztcflr',
-        'PASSWORD': 'f11ed22ba71e2d2aef39e13482df0d668a7285dc4166a2d9d644ee6aa8eed202'
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.environ['DATABASE_PASSWORD'],
     }
 }
 
