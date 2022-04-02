@@ -67,7 +67,15 @@
 
 
 &emsp;
+<div class='container-fluid'>
 <br>
+Created on : {{ object.start_date }} - {{ object.start_time}}
+<br>{% if object.end_date %}
+End Date: {{ object.end_date }} {% else %}{% endif %}
+{% if object.end_time %}
+End Time: {{ object.end_time }}{% else %}{% endif %}
+</div>
+</br>
 </hr>
 <br>
 
