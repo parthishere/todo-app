@@ -1,11 +1,13 @@
 from django import forms
+from .widgets import TimePickerInput
+
 
 from tags.models import Tag
 from .models import *
 
 class TodoModelForm(forms.ModelForm):
 	end_date =forms.DateField(widget = forms.SelectDateWidget())
-	end_time = forms.TimeField()
+	end_time = forms.TimeField(widget=TimePickerInput)
 	class Meta:
 		model = ToDoModel
 		fields = ['text', 'description', 'end_date', 'end_time', 'tags']

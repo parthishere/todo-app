@@ -1,6 +1,25 @@
 {% extends 'main_app/base.html' %}
 
 {% block body_block %}
+<style>
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 1px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+</style>
+
+
 <br></br>
 
 {% url 'main_app:home' as home_url %}
@@ -9,14 +28,14 @@
   <form method='get' action="{% url 'main_app:search' %}">
 
         <div class="input-group md-3">
-          <select id="category" class="form-control" name="category">
+          <select id="category" class="form-control" name="category" style="margin:10px">
             <option selected>Select Categories...</option>
             {% for cat in categories %}
             <option value="{{ cat }}">{{ cat }}</option>
             {% endfor %}
           </select>
             <div class="input-group-prepend"> 
-            <input style="float: " type='submit' name='submit' class='btn btn-primary form-control-sm center'>
+            <input class='button' style="float: " type='submit' name='submit' class='btn btn-primary form-control-sm center'>
             </div>
         </div>
   </form>
@@ -31,7 +50,7 @@
 
 
 {% if objects_list %}
-<div class='container-fluid'>
+<div class='container-sm'>
 <ul class="list-group">
 
 {% for obj in objects_list %}<center>
@@ -76,6 +95,7 @@
 </li>
 {% endfor %}
 </ul>
+
 </div>
 {% endif %}
 </center>
