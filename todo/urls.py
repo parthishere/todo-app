@@ -23,7 +23,7 @@ urlpatterns = [
     path('', include('main_app.urls'), name='list'),
     path('tag/', include('tags.urls'), name='tag'),
     path('accounts/', include('allauth.urls')),
-    path('__debug__/', include('debug_toolbar.urls')),
+    # path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 if settings.DEBUG:
