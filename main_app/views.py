@@ -11,13 +11,14 @@ from tags.forms import TagForm
 
 # Create your views here.
 def list_function(request):
-    if request.user.is_authenticated:
+    user = get_user_set(request)
+    if user.is_authenticated:
         cat = None
         try:
-            cat = Tag.objects.filter(user=request.user)
+            cat = Tag.objects.filter(user=user)
         except:
             print('e')
-        objects_list = ToDoModel.objects.filter(done=False).filter(archive=False).filter(user=request.user)
+        objects_list = ToDoModel.objects.filter(done=False).filter(archive=False).filter(user=user)
         context = {}
         if objects_list.exists():
             context = {
@@ -39,7 +40,7 @@ def add_todo(request):
     if request.POST:
         if todo_form.is_valid():
             instance = todo_form.save(commit=False)
-            instance.user = request.user
+            instance.user = user
             instance.save()
             context['form'] = todo_form
             return redirect('main_app:home')
@@ -52,9 +53,10 @@ def add_todo(request):
 @login_required(login_url='account_login')  
 def detail_todo(request, pk=None):
     context = {}
-    if request.user.is_authenticated:
+    user = request.user
+    if user.is_authenticated:
         obj = get_object_or_404(ToDoModel, pk=pk)
-        if obj.user == request.user:
+        if obj.user == user:
             if obj is not None:
                 context = {
                     'object':obj
@@ -74,9 +76,9 @@ def edit_todo(request, pk=None):
     if request.POST:
         if todo_form.is_valid():
             instance = todo_form.save(commit=False)
-            instance.user = request.user
+            instance.user = user
             try:
-                tag = Tag.objects.filter(tag__in=request.POST.get('tags'))
+                tag = Tag.objects.prefetch_related(tag__in=request.POST.get('tags'))
                 instance.tags.set(tag)
             except:
                 pass
@@ -105,14 +107,15 @@ def delete_list(request, pk=None):
 def done_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
+        user = request.user
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=user)
             if obj.done == True:
                 obj.done=False
             else:
                 obj.done=True
             obj.save()
-            request.session['completed_count'] = ToDoModel.objects.filter(done=True).filter(user=request.user).count()
+            request.session['completed_count'] = ToDoModel.objects.filter(done=True).filter(user=user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
@@ -128,14 +131,15 @@ def archives_list(request):
 def archive_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
+        user = request.user
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=user)
             if obj.archive == True:
                 obj.archive=False
             else:
                 obj.archive=True
             obj.save()
-            request.session['archive_count'] = ToDoModel.objects.filter(archive=True).filter(user=request.user).count()
+            request.session['archive_count'] = ToDoModel.objects.filter(archive=True).filter(user=user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
@@ -143,14 +147,14 @@ def archive_todo(request):
 def search_todo(request):
     context = {}
     qs = None
-    
+    user = get_user_set(request)
     try:
-        cat = Tag.objects.filter(user=request.user)
+        cat = Tag.objects.filter(user=user)
         context['categories'] = cat
     except:
         pass
     
-    if request.user.is_authenticated:
+    if user.is_authenticated:
         query = request.GET.get('q')
         cat = request.GET.get('category')
         
@@ -160,12 +164,12 @@ def search_todo(request):
                 Q(start_date__icontains=query) |
                 Q(end_date__icontains=query) |
                 Q(tags__tag__icontains=query)
-            ).filter(user=request.user)
+            ).filter(user=user)
         
         elif query is None and cat is not None:
             qs = ToDoModel.objects.filter(
                Q(tags__tag__icontains=cat)
-            ).filter(user=request.user)
+            ).filter(user=user)
             
         elif query is not None and cat is not None:
             qs = ToDoModel.objects.filter(
@@ -173,7 +177,7 @@ def search_todo(request):
                 Q(start_date__icontains=query) |
                 Q(end_date__icontains=query) |
                 Q(tags__tag__icontains=query)
-            ).filter(user=request.user).filter(Q(tags__tag__icontains=query))
+            ).filter(user=user).filter(Q(tags__tag__icontains=query))
         
         if qs is not None:
             context['objects_list'] = qs
@@ -196,14 +200,15 @@ def done_todo_list(request):
 def starred_todo(request):
     if request.POST:
         pk = request.POST.get('pk')
+        user = request.user
         if pk is not None:
-            obj = get_object_or_404(ToDoModel, pk=pk, user=request.user)
+            obj = get_object_or_404(ToDoModel, pk=pk, user=user)
             if obj.starred == True:
                 obj.starred=False
             else:
                 obj.starred=True
             obj.save()
-            request.session['starred_count'] = ToDoModel.objects.filter(starred=True).filter(user=request.user).count()
+            request.session['starred_count'] = ToDoModel.objects.filter(starred=True).filter(user=user).count()
             return redirect('main_app:home')
     return render(request, "main_app/home.html", context={})
 
