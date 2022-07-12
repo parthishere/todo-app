@@ -29,5 +29,14 @@ class ToDoModel(models.Model):
 		return reverse("main_app:detail", kwargs={"pk": self.pk})
 
 
+class ImageTodo(models.Model):
+    todo = models.ForeignKey(ToDoModel, on_delete=models.CASCADE)
+    image = models.FileField(upload_to='user/media')
+    
+    def __str__(self):
+	    return self.todo.text
+    
+
+
 	
 
